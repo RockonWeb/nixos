@@ -1,0 +1,34 @@
+{
+  pkgs,
+  username,
+  host,
+  profile,
+  ...
+}:
+{
+  home.packages = [
+    (import ./emopicker9000.nix { inherit pkgs; })
+    (import ./keybinds.nix { inherit pkgs; })
+    (import ./task-waybar.nix { inherit pkgs; })
+    (import ./nvidia-offload.nix { inherit pkgs; })
+    (import ./wallsetter.nix {
+      inherit pkgs;
+      inherit username;
+    })
+    (import ./web-search.nix { inherit pkgs; })
+    (import ./rofi-launcher.nix { inherit pkgs; })
+    (import ./screenshootin.nix { inherit pkgs; })
+    (import ./cliphist-picker.nix { inherit pkgs; })
+    (import ./hm-find.nix { inherit pkgs; })
+    (import ./zed-fix.nix { inherit pkgs; })
+    (import ./niri-gaming-mode.nix { inherit pkgs host; })
+    (import ./webapp-install.nix { inherit pkgs; })
+    (import ./webapp-remove.nix { inherit pkgs; })
+    (import ./dcli.nix {
+      inherit pkgs host profile;
+      backupFiles = [
+        ".config/mimeapps.list.backup"
+      ];
+    })
+  ];
+}
