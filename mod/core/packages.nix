@@ -1,0 +1,169 @@
+{
+  pkgs,
+  lib,
+  zen-browser,
+  host,
+  inputs,
+  ...
+}:
+{
+  programs = {
+    neovim = {
+      enable = false;
+      defaultEditor = false;
+    };
+    firefox.enable = false; # Firefox is not installed by default
+    dconf.enable = true;
+    seahorse.enable = true;
+    # Hyprland always enabled - both WMs available at login
+    #hyprland = {
+    #  enable = false; # Create desktop file and dependencies
+    #  package = pkgs.hyprland;
+    #  portalPackage = pkgs.xdg-desktop-portal-hyprland;
+    #};
+    #hyprlock.enable = false; # Resolve pam issue, can be disabled per-host via enableHyprlock
+    fuse.userAllowOther = true;
+    mtr.enable = true;
+    gnupg.agent = {
+      enable = true;
+      enableSSHSupport = true;
+    };
+    throne = {
+      enable = true;
+      tunMode.enable = true;
+    };
+    chromium = {
+      enable = true;
+	  extraOpts = {
+	    "AutoLaunchProtocolsFromOrigins" = [
+	      {
+		"allowed_origins" = [ "https://*" ];
+		"protocol" = "antigravity";
+	      }
+	    ];
+  	};
+    };
+    
+  };
+
+  security.wrappers.throne = {
+    owner = "root";
+    group = "root";
+    capabilities = "cap_net_admin,cap_net_bind_service=+ep";
+    source = "${pkgs.lib.getExe pkgs.throne}";
+  };
+
+  # Virtualization support for GNOME Boxes
+  virtualisation.libvirtd.enable = true;
+
+  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.allowUnfreePredicate =
+    pkg:
+    builtins.elem (lib.getName pkg) [
+      "zed"
+    ];
+
+  environment.systemPackages = with pkgs; [
+    # amfora # Fancy Terminal Browser For Gemini Protocol
+    inputs.antigravity-nix.packages.${pkgs.system}.google-antigravity-ide-no-fhs
+    python3
+    vscode-fhs
+    codex
+    spotify
+    #hysteria
+    #antigravity
+    ntfs3g
+    corefonts
+    vista-fonts
+    fzf
+    vesktop
+    libreoffice-fresh
+    openrgb
+    onlyoffice-desktopeditors
+    git
+    #yandex-music
+    firefox
+    lxqt.lxqt-policykit
+    xray
+    v2raya
+    appimage-run
+    telegram-desktop
+    google-chrome
+    android-tools # Needed For AppImage Support
+    bottom # btop like util
+    brightnessctl # For Screen Brightness Control
+    cmatrix # Matrix Movie Effect In Terminal
+    cowsay # Great Fun Terminal Program
+    docker-compose # Allows Controlling Docker From A Single File
+    duf # Utility For Viewing Disk Usage In Terminal
+    dysk # disk usage util
+    eza # Beautiful ls Replacement
+    ffmpeg # Terminal Video / Audio Editing
+    file-roller # Archive Manager
+    gdu # graphical disk usage
+    gedit # Simple Graphical Text Editor
+    chromium
+    gimp # Great Photo Editor
+    mesa-demos # Needed for inxi -G GPU info
+    gping # graphical ping
+    tuigreet # The Login Manager (Sometimes Referred To As Display Manager)
+    htop # Simple Terminal Based System Monitor
+
+    eog # For Image Viewing
+    alacritty # Terminal Emulator (default for niri)
+    fuzzel # Application Launcher (default for niri)
+    inxi # CLI System Information Tool
+    jq # Required by Noctalia Clipper to load notecards from JSON files
+    killall # For Killing All Instances Of Programs
+    libnotify # For Notifications
+    lm_sensors # Used For Getting Hardware Temps
+    lolcat # Add Colors To Your Terminal Command Output
+    lshw # Detailed Hardware Information
+    mpv # Incredible Video Player
+    ncdu # Disk Usage Analyzer With Ncurses Interface
+    nitch # small fetch util
+    # Nix Language Packages
+    nixfmt # Nix Formatter
+    nixd # Nix Language Server
+    nil # Nix Language Server
+    onefetch # shows current build info and stats
+    pavucontrol # For Editing Audio Levels & Devices
+    pciutils # Collection Of Tools For Inspecting PCI Devices
+    picard # For Changing Music Metadata & Getting Cover Art
+    pkg-config # Wrapper Script For Allowing Packages To Get Info On Others
+    playerctl # Allows Changing Media Volume Through Scripts
+    rhythmbox
+    ripgrep # Improved Grep
+    socat # Needed For Screenshots
+    sox # audio support for FFMPEG
+    unrar # Tool For Handling .rar Files
+    unzip # Tool For Handling .zip Files
+    usbutils # Good Tools For USB Devices
+    v4l-utils # Used For Things Like OBS Virtual Camera
+    waypaper # backup wallpaper GUI
+    wget # Tool For Fetching Files With Links
+    xwayland-satellite # Xwayland outside your Wayland compositor
+    ytmdl # Tool For Downloading Audio From YouTube
+    nwg-displays # Manage Displays
+    nwg-drawer # drawer GUI
+    nwg-look # Look GUI
+    rofi-emoji # rofi-emoji-wayland merged into rofi-emoji in nixpkgs-unstable
+    # youtube-music
+    # zen-browser # Default browser
+    # Development Tools
+    # zed-editor # Code editor with AI features
+    popsicle
+    # AI code editors (cursor, claude-code, gemini-cli) moved to modules/core/ai-code-editors.nix
+    gum
+    gtk3
+    gtk4
+    localsend
+  ];
+  
+  # Добавляем прямо в этот же модуль:
+  xdg.mime.defaultApplications = {
+     "x-scheme-handler/antigravity" = "antigravity-ide.desktop";
+     "x-scheme-handler/antigravity-ide" = "antigravity-ide.desktop";
+    
+  };
+}
